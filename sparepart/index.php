@@ -61,6 +61,11 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
         <?php
         include '../include/head.php';
         ?>
+        <style>
+            ul.ui-autocomplete {
+                z-index: 1100;
+            }
+        </style>
     </head>
     <body>
         <?php
@@ -78,7 +83,7 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
         $index = 0;
         while($row = $fetcher->Fetch()):
         ?>
-        <div id="create_vendor_<?=$row['id'] ?>" class="modal fade show">
+        <div id="create_vendor_<?=$row['id'] ?>" class="modal fade show create_vendor">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <form method="post">
@@ -90,7 +95,7 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="vendor">Продавец / Производитель</label>
-                                <input type="text" class="form-control" name="vendor" />
+                                <input type="text" class="form-control vendors" name="vendor" />
                             </div>
                         </div>
                         <div class="modal-footer" style="justify-content: flex-start;">
@@ -239,6 +244,38 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
                             alert('Ошибка при редактировании комментария')
                         });
             }
+            
+            function VendorsAutocpmplete() {
+                var vendors = [
+                    <?php
+                    $vendors = array();
+                    $sql = "select name from vendor order by name";
+                    $fetcher = new Fetcher($sql);
+                    while($row = $fetcher->Fetch()) {
+                        array_push($vendors, '"'.addslashes($row['name']).'"');
+                    }
+                    
+                    echo implode(",", $vendors);
+                    ?>
+                ];
+                $("input.vendors").autocomplete({
+                    source: vendors
+                });
+            }
+            
+            VendorsAutocpmplete();
+            
+            $('.create_vendor').on('shown.bs.modal', function() {
+                $('input:text:visible:first').focus();
+            });
+            
+            $('.create_vendor').on('hidden.bs.modal', function() {
+                $('input[name=name]').val('');
+            });
+            
+            <?php if(null !== filter_input(INPUT_POST, 'create_machine_submit') && empty($error_message) && !empty($machine_insert_id)): ?>
+            window.scrollTo(0, $('#s_<?= $machine_insert_id ?>').offset().top - $('#topmost').height());
+            <?php endif; ?>
         </script>
     </body>
 </html>
