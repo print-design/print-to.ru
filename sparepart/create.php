@@ -18,6 +18,11 @@ if(empty($type_id) || empty($machine_id)) {
 $form_valid = true;
 $error_message = '';
 
+$name = '';
+$place = '';
+$number = null;
+$comment = '';
+
 $name_valid = '';
 $place_valid = '';
 $number_valid = '';
@@ -100,22 +105,22 @@ if(null !== filter_input(INPUT_POST, 'create_sparepart_submit')) {
                         <input type="hidden" name="machine_id" value="<?=$machine_id ?>" />
                         <div class="form-group">
                             <label for="name">Наименование запчасти</label>
-                            <input type="text" class="form-control<?=$name_valid ?>" name="name" id="name" value="<?= htmlentities(filter_input(INPUT_POST, 'name')) ?>" required="required" autocomplete="off" />
+                            <input type="text" class="form-control<?=$name_valid ?>" name="name" id="name" value="<?= htmlentities($name) ?>" required="required" autocomplete="off" />
                             <div class="invalid-feedback">Наименование запчасти обязательно</div>
                         </div>
                         <div class="form-group">
                             <label for="place">Место установки</label>
-                            <input type="text" class="form-control<?=$place_valid ?>" name="place" id="place" value="<?= htmlentities(filter_input(INPUT_POST, 'place')) ?>" required="required" autocomplete="off" />
+                            <input type="text" class="form-control<?=$place_valid ?>" name="place" id="place" value="<?= htmlentities($place) ?>" required="required" autocomplete="off" />
                             <div class="invalid-feedback">Место установки обязательно</div>
                         </div>
                         <div class="form-group">
                             <label for="number">Кол-во установленных</label>
-                            <input type="number" min="1" class="form-control w-25<?=$number_valid ?>" name="number" id="number" value="<?= filter_input(INPUT_POST, 'number') ?>" required="required" autocomplete="off" />
+                            <input type="number" min="1" class="form-control w-25<?=$number_valid ?>" name="number" id="number" value="<?=$number ?>" required="required" autocomplete="off" />
                             <div class="invalid-feedback">Кол-во установленных обязательно</div>
                         </div>
                         <div class="form-group">
                             <label for="comment">Примечание</label>
-                            <textarea class="form-control" rows="6" name="comment" id="comment"><?= htmlentities(filter_input(INPUT_POST, 'comment')) ?></textarea>
+                            <textarea class="form-control" rows="6" name="comment" id="comment"><?= htmlentities($comment) ?></textarea>
                         </div>
                         <button type="submit" class="btn btn-dark" name="create_sparepart_submit">Сохранить</button>
                     </form>

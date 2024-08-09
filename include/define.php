@@ -1,5 +1,5 @@
 <?php
-define('APPLICATION', '/spareparts');
+define('APPLICATION', '/print-to.ru');
 
 define('DATABASE_HOST', 'localhost');
 define('DATABASE_USER', 'root');
