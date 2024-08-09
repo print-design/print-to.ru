@@ -8,6 +8,7 @@ if(!IsInRole(array(ROLE_NAMES[ROLE_ADMIN], ROLE_NAMES[ROLE_ENGINEER], ROLE_NAMES
 
 $type_id = filter_input(INPUT_GET, 'type_id');
 $machine_id = filter_input(INPUT_GET, 'machine_id');
+$find = filter_input(INPUT_GET, 'find');
 
 // Если не указаны type_id или machine_id перенаправляем на первые из них
 if(empty($type_id) || empty($machine_id)) {
@@ -65,6 +66,42 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
         <?php
         include '../include/header_sparepart.php';
         ?>
+        <?php
+        // Формы добавления продавца / производителя
+        $sql = "select id, name, place, number, comment from sparepart where machine_id = $machine_id ";
+        if(!empty($find)) {
+            $find = addslashes($find);
+            $sql .= "and name like '%$find%' ";
+        }
+        $sql .= "order by name";
+        $fetcher = new Fetcher($sql);
+        $index = 0;
+        while($row = $fetcher->Fetch()):
+        ?>
+        <div id="create_vendor_<?=$row['id'] ?>" class="modal fade show">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="post">
+                        <input type="hidden" name="sparepart_id" value="<?=$row['id'] ?>" />
+                        <div class="modal-header">
+                            <p class="font-weight-bold" style="font-size: x-large;"><?=$row['name'] ?></p>
+                            <button type="button" class="close create_vendor_<?=$row['id'] ?>_dismiss" data-dismiss="modal"><i class="fas fa-times" style="color: #EC3A7A;"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="vendor">Продавец / Производитель</label>
+                                <input type="text" class="form-control" name="vendor" />
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="justify-content: flex-start;">
+                            <button type="submit" class="btn btn-dark" name="create_vendor_submit">Добавить</button>
+                            <button type="button" class="btn btn-light create_vendor_<?=$row['id'] ?>_dismiss" data-dismiss="modal">Отменить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <?php endwhile; ?>
         <div class="container-fluid">
             <?php
             $machine_name = '';
@@ -91,8 +128,6 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
                     <th>Примечание</th>
                 </tr>
                 <?php
-                $find = filter_input(INPUT_GET, 'find');
-                
                 // Продавцы запчастей
                 $sql = "select vs.vendor_id, vs.sparepart_id, v.name vendor "
                         . "from vendor_sparepart vs "
@@ -148,7 +183,7 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
                         endif;
                         ?>
                     </td>
-                    <td><button class="btn btn-dark btn-sm"><i class="fas fa-plus"></i></button></td>
+                    <td><button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#create_vendor_<?=$row['id'] ?>"><i class="fas fa-plus"></i></button></td>
                     <td><?=$row['place'] ?></td>
                     <td><?=$row['number'] ?></td>
                     <td></td>
