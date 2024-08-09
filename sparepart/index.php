@@ -30,6 +30,55 @@ if(empty($type_id) || empty($machine_id)) {
     header("Location: ?type_id=$type_id&machine_id=$machine_id");
 }
 
+// Обработка добавления поставщика
+$form_valid = false;
+$vendor_insert_id = null;
+
+if(null !== filter_input(INPUT_POST, 'create_vendor_submit')) {
+    $sparepart_id = filter_input(INPUT_POST, 'sparepart_id');
+    $vendor = filter_input(INPUT_POST, 'vendor');
+    $vendor = htmlentities($vendor);
+    
+    $vendor_id = null;
+    
+    $sql = "select id from vendor where name = '$vendor'";
+    $fetcher = new Fetcher($sql);
+    $error_message = $fetcher->error;
+    if($row = $fetcher->Fetch()) {
+        $vendor_id = $row['id'];
+    }
+    
+    if(empty($error_message)) {
+        if(empty($vendor_id)) {
+            $sql = "insert into vendor (name) values ('$vendor')";
+            $executer = new Executer($sql);
+            $error_message = $executer->error;
+            $vendor_insert_id = $executer->insert_id;
+        
+            if(empty($error_message)) {
+                $sql = "insert into vendor_sparepart (vendor_id, sparepart_id) values ($vendor_insert_id, $sparepart_id)";
+                $executer = new Executer($sql);
+                $error_message = $executer->error;
+            }
+        }
+        else {
+            $count = 0;
+            $sql = "select count(id) from vendor_sparepart where vendor_id = $vendor_id and sparepart_id = $sparepart_id";
+            $fetcher = new Fetcher($sql);
+            $error_message = $fetcher->error;
+            if($row = $fetcher->Fetch()) {
+                $count = $row[0];
+            }
+            
+            if($count == 0 && empty($error_message)) {
+                $sql = "insert into vendor_sparepart (vendor_id, sparepart_id) values ($vendor_id, $sparepart_id)";
+                $executer = new Executer($sql);
+                $error_message = $executer->error;
+            }
+        }
+    }
+}
+
 // Обработка удаления поставщика
 $form_valid = true;
 
@@ -95,7 +144,7 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="vendor">Продавец / Производитель</label>
-                                <input type="text" class="form-control vendors" name="vendor" />
+                                <input type="text" class="form-control vendors" name="vendor" required="required" />
                             </div>
                         </div>
                         <div class="modal-footer" style="justify-content: flex-start;">
