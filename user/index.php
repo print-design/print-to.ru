@@ -114,8 +114,8 @@ if(null !== filter_input(INPUT_POST, 'user_change_password_submit')) {
                             </div>
                         </div>
                         <div class="modal-footer" style="justify-content: flex-start;">
-                            <button type="submit" class="btn btn-primary" id="user_change_password_submit" name="user_change_password_submit">Изменить пароль</button>
-                            <button type="button" class="btn user_change_password_dismiss" data-dismiss="modal">Отменить</button>
+                            <button type="submit" class="btn btn-primary" id="user_change_password_submit" name="user_change_password_submit" style="width: 150px;">Изменить пароль</button>
+                            <button type="button" class="btn user_change_password_dismiss" data-dismiss="modal" style="width: 150px;">Отменить</button>
                         </div>
                     </form>
                 </div>

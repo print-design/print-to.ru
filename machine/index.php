@@ -113,8 +113,8 @@ if(null !== filter_input(INPUT_POST, 'delete_machine_submit')) {
                             </div>
                         </div>
                         <div class="modal-footer" style="justify-content: flex-start;">
-                            <button type="submit" class="btn btn-dark" id="create_machine_submit" name="create_machine_submit">Добавить</button>
-                            <button type="button" class="btn btn-light create_machine_dismiss" data-dismiss="modal">Отменить</button>
+                            <button type="submit" class="btn btn-dark" id="create_machine_submit" name="create_machine_submit" style="width: 150px;">Добавить</button>
+                            <button type="button" class="btn btn-light create_machine_dismiss" data-dismiss="modal" style="width: 150px;">Отменить</button>
                         </div>
                     </form>
                 </div>
