@@ -225,7 +225,7 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
                         <div>
                             <?=$vendor['name'] ?>
                             &nbsp;
-                            <form class="d-inline" method="post" action="?type_id=<?=$type_id ?>&machine_id=<?=$machine_id ?>" onsubmit="javascript: return confirm('Действительно удалить?');">
+                            <form class="d-inline" method="post" onsubmit="javascript: return confirm('Действительно удалить?');">
                                 <input type="hidden" name="scroll" />
                                 <input type="hidden" name="vendor_id" value="<?=$vendor['id'] ?>" />
                                 <input type="hidden" name="sparepart_id" value="<?=$row['id'] ?>" />
@@ -315,11 +315,11 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
             VendorsAutocpmplete();
             
             $('.create_vendor').on('shown.bs.modal', function() {
-                $('input:text:visible:first').focus();
+                $('input:text:visible[name=vendor]').focus();
             });
             
             $('.create_vendor').on('hidden.bs.modal', function() {
-                $('input[name=name]').val('');
+                $('input[name=vendor]').val('');
             });
             
             <?php if(null !== filter_input(INPUT_POST, 'create_machine_submit') && empty($error_message) && !empty($machine_insert_id)): ?>
