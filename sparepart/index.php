@@ -343,9 +343,14 @@ if(null !== filter_input(INPUT_POST, 'stock_out_submit')) {
                 $sql .= "order by name";
                 $fetcher = new Fetcher($sql);
                 $index = 0;
+                
                 while($row = $fetcher->Fetch()):
+                    $rowclass = "";
+                    if($row['stock'] < $row['number']) {
+                        $rowclass = "bg-warning";
+                    }
                 ?>
-                <tr>
+                <tr class="<?=$rowclass ?>">
                     <td><?= ++$index ?><a name="sparepart_<?=$row['id'] ?>" /></td>
                     <td><?=$row['name'] ?></td>
                     <td>
