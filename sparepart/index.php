@@ -368,14 +368,14 @@ if(null !== filter_input(INPUT_POST, 'stock_out_submit')) {
                         endif;
                         ?>
                     </td>
-                    <td><button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#create_vendor_<?=$row['id'] ?>" title="Добавить продавца / производителя" data-placement="right"><i class="fas fa-plus"></i></button></td>
+                    <td><button class="btn btn-dark btn-sm ui_tooltip right" data-toggle="modal" data-target="#create_vendor_<?=$row['id'] ?>" title="Добавить продавца / производителя"><i class="fas fa-plus"></i></button></td>
                     <td><?=$row['place'] ?></td>
                     <td><?=$row['number'] ?></td>
                     <td><?=$row['stock'] ?></td>
                     <td>
-                        <button class="btn btn-dark btn-sm tooltip-left" data-toggle="modal" data-target="#stock_in_<?=$row['id'] ?>" title="Принять на склад"><i class="fas fa-plus"></i></button>
+                        <button class="btn btn-dark btn-sm ui_tooltip left" data-toggle="modal" data-target="#stock_in_<?=$row['id'] ?>" title="Принять на склад"><i class="fas fa-plus"></i></button>
                         <?php if($row['stock'] > 1): ?>
-                        <button class="btn btn-outline-dark btn-sm" data-toggle="modal" data-target="#stock_out_<?=$row['id'] ?>" title="Взять со склада"><i class="fas fa-minus"></i></button>
+                        <button class="btn btn-outline-dark btn-sm ui_tooltip right" data-toggle="modal" data-target="#stock_out_<?=$row['id'] ?>" title="Взять со склада"><i class="fas fa-minus"></i></button>
                         <?php endif; ?>
                     </td>
                     <td></td>

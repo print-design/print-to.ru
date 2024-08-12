@@ -25,23 +25,23 @@ elseif($folder == "user") {
 }
 ?>
 <div id="left_bar">
-    <a href="<?=APPLICATION ?>/" class="left_bar_item logo" title="На главную" data-toggle="tooltip" data-placement="right"><img src="<?=APPLICATION ?>/images/logo.svg" /></a>
+    <a href="<?=APPLICATION ?>/" class="left_bar_item logo ui_tooltip right" title="На главную"><img src="<?=APPLICATION ?>/images/logo.svg" /></a>
     <?php
     // Запчасти
     if(IsInRole(array(ROLE_NAMES[ROLE_ADMIN], ROLE_NAMES[ROLE_ENGINEER], ROLE_NAMES[ROLE_MECHANIC]))):
     ?>
-    <a href="<?=APPLICATION ?>/sparepart/" class="left_bar_item<?=$sparepart_class ?>" title="Запчасти"><img src="<?=APPLICATION ?>/images/nav_sparepart.svg" style="height: 25px; width: 25px;" /></a>
+    <a href="<?=APPLICATION ?>/sparepart/" class="left_bar_item ui_tooltip right<?=$sparepart_class ?>" title="Запчасти"><img src="<?=APPLICATION ?>/images/nav_sparepart.svg" style="height: 25px; width: 25px;" /></a>
     <?php
     endif;
     // Машины
     if(IsInRole(array(ROLE_NAMES[ROLE_ADMIN], ROLE_NAMES[ROLE_ENGINEER], ROLE_NAMES[ROLE_MECHANIC]))):
     ?>
-    <a href="<?=APPLICATION ?>/machine/" class="left_bar_item<?=$machine_class ?>" title="Машины"><img src="<?=APPLICATION ?>/images/nav_machine.svg" style="height: 25px; width: 25px;" /></a>
+    <a href="<?=APPLICATION ?>/machine/" class="left_bar_item ui_tooltip right<?=$machine_class ?>" title="Машины"><img src="<?=APPLICATION ?>/images/nav_machine.svg" style="height: 25px; width: 25px;" /></a>
     <?php
     endif;
     // Пользователи
     if(IsInRole(array(ROLE_NAMES[ROLE_ADMIN]))):
     ?>
-    <a href="<?=APPLICATION ?>/user/" class="left_bar_item<?=$user_class ?>" title="Пользователи" data-toggle="tooltip" data-placement="right"><img src="<?=APPLICATION ?>/images/nav_user.svg" style="height: 25px; width: 25px;" /></a>
+    <a href="<?=APPLICATION ?>/user/" class="left_bar_item ui_tooltip right<?=$user_class ?>" title="Пользователи"><img src="<?=APPLICATION ?>/images/nav_user.svg" style="height: 25px; width: 25px;" /></a>
     <?php endif; ?>
 </div>
