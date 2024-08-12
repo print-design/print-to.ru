@@ -103,6 +103,81 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
         $error_message = $executer->error;
     }
 }
+
+// Обработка приёма запчастей на склад
+$form_valid = true;
+
+if(null !== filter_input(INPUT_POST, 'stock_in_submit')) {
+    $sparepart_id = filter_input(INPUT_POST, 'sparepart_id');
+    
+    if(empty($sparepart_id)) {
+        $error_message = "Не указан ID запчасти";
+        $form_valid = false;
+    }
+    
+    $stock_in = filter_input(INPUT_POST, 'stock_in');
+    
+    if(empty($stock_in)) {
+        $error_message = "Не указано количество принятых запчастей";
+        $form_valid = false;
+    }
+    
+    $user_id = GetUserId();
+    
+    if($form_valid) {
+        $sql = "insert into stock_history (sparepart_id, value, is_in, user_id) values ($sparepart_id, $stock_in, 1, $user_id)";
+        $executer = new Executer($sql);
+        $error_message = $executer->error;
+        
+        if(empty($error_message)) {
+            $sql = "update sparepart set stock = stock + $stock_in where id = $sparepart_id";
+            $executer = new Executer($sql);
+            $error_message = $executer->error;
+        }
+    }
+}
+
+// Обработка взятия запчастей со склада
+$form_valid = true;
+
+if(null !== filter_input(INPUT_POST, 'stock_out_submit')) {
+    $sparepart_id = filter_input(INPUT_POST, 'sparepart_id');
+    
+    if(empty($sparepart_id)) {
+        $error_message = "Не указан ID запчасти";
+        $form_valid = false;
+    }
+    
+    $stock_out = filter_input(INPUT_POST, 'stock_out');
+    
+    if(empty($stock_out)) {
+        $error_message = "Не указано количество взятых запчастей";
+        $form_valid = false;
+    }
+    
+    $sql = "select stock from sparepart where id = $sparepart_id";
+    $fetcher = new Fetcher($sql);
+    if($row = $fetcher->Fetch()) {
+        if($row['stock'] < $stock_out) {
+            $error_message = "Превышено количество остатка на складе";
+            $form_valid = false;
+        }
+    }
+    
+    $user_id = GetUserId();
+    
+    if($form_valid) {
+        $sql = "insert into stock_history (sparepart_id, value, is_in, user_id) values($sparepart_id, $stock_out, 0, $user_id)";
+        $executer = new Executer($sql);
+        $error_message = $executer->error;
+        
+        if(empty($error_message)) {
+            $sql = "update sparepart set stock = stock - $stock_out where id = $sparepart_id";
+            $executer = new Executer($sql);
+            $error_message = $executer->error;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -114,51 +189,6 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
             ul.ui-autocomplete {
                 z-index: 1100;
             }
-            
-            /*.ui-tooltip {
-    background: #666;
-    color: white;
-    border: none;
-    padding: 0;
-    opacity: 1;
-}
-.ui-tooltip-content {
-    position: relative;
-    padding: 1em;
-}
-.ui-tooltip-content::after {
-    content: '';
-    position: absolute;
-    border-style: solid;
-    display: block;
-    width: 0;
-}
-.right .ui-tooltip-content::after {
-    top: 18px;
-    left: -10px;
-    border-color: transparent #666;
-    border-width: 10px 10px 10px 0;
-}
-.left .ui-tooltip-content::after {
-    top: 18px;
-    right: -10px;
-    border-color: transparent #666;
-    border-width: 10px 0 10px 10px;
-}
-.top .ui-tooltip-content::after {
-    bottom: -10px;
-    left: 72px;
-    border-color: #666 transparent;
-    border-width: 10px 10px 0;    
-}
-.bottom .ui-tooltip-content::after {
-    top: -10px;
-    left: 72px;
-    border-color: #666 transparent;
-    border-width: 0 10px 10px;
-}*/
-/* tooltips */
-/* https://jsfiddle.net/tj_vantoll/kyBwU/ */
         </style>
     </head>
     <body>
@@ -167,7 +197,7 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
         ?>
         <?php
         // Формы добавления продавца / производителя
-        $sql = "select id, name from sparepart where machine_id = $machine_id ";
+        $sql = "select id, name, stock from sparepart where machine_id = $machine_id ";
         if(!empty($find)) {
             $find = addslashes($find);
             $sql .= "and name like '%$find%' ";
@@ -182,6 +212,7 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
                 <div class="modal-content">
                     <form method="post">
                         <input type="hidden" name="sparepart_id" value="<?=$row['id'] ?>" />
+                        <input type="hidden" name="scroll" />
                         <div class="modal-header">
                             <p class="font-weight-bold" style="font-size: x-large;"><?=$row['name'] ?></p>
                             <button type="button" class="close create_vendor_<?=$row['id'] ?>_dismiss" data-dismiss="modal"><i class="fas fa-times" style="color: #EC3A7A;"></i></button>
@@ -205,6 +236,7 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
                 <div class="modal-content">
                     <form method="post">
                         <input type="hidden" name="sparepart_id" value="<?=$row['id'] ?>" />
+                        <input type="hidden" name="scroll" />
                         <div class="modal-header">
                             <p class="font-weight-bold" style="font-size: x-large">Приход(<?=$row['name'] ?>)</p>
                             <button type="button" class="close stock_in_<?=$row['id'] ?>_dismiss" data-dismiss="modal"><i class="fas fa-times" style="color: #EC3A7A;"></i></button>
@@ -231,6 +263,7 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
                 <div class="modal-content">
                     <form method="post">
                         <input type="hidden" name="sparepart_id" value="<?=$row['id'] ?>" />
+                        <input type="hidden" name="scroll" />
                         <div class="modal-header">
                             <p class="font-weight-bold" style="font-size: x-large">Расход(<?=$row['name'] ?>)</p>
                             <button type="button" class="close stock_out_<?=$row['id'] ?>_dismiss" data-dismiss="modal"><i class="fas fa-times" style="color: #EC3A7A;"></i></button>
@@ -239,7 +272,7 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
                             <div class="form-group">
                                 <label for="stock_out">Взять со склада</label>
                                 <div class="input-group">
-                                    <input type="number" min="1" class="form-control" name="stock_out" required="required" />
+                                    <input type="number" min="1" max="<?=$row['stock'] ?>" class="form-control" name="stock_out" required="required" />
                                     <div class="input-group-append"><span class="input-group-text">шт</span></div>
                                 </div>
                             </div>
@@ -341,7 +374,9 @@ if(null !== filter_input(INPUT_POST, 'vendor_remove_submit')) {
                     <td><?=$row['stock'] ?></td>
                     <td>
                         <button class="btn btn-dark btn-sm tooltip-left" data-toggle="modal" data-target="#stock_in_<?=$row['id'] ?>" title="Принять на склад"><i class="fas fa-plus"></i></button>
+                        <?php if($row['stock'] > 1): ?>
                         <button class="btn btn-outline-dark btn-sm" data-toggle="modal" data-target="#stock_out_<?=$row['id'] ?>" title="Взять со склада"><i class="fas fa-minus"></i></button>
+                        <?php endif; ?>
                     </td>
                     <td></td>
                     <td>
