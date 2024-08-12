@@ -308,7 +308,8 @@ if(null !== filter_input(INPUT_POST, 'stock_out_submit')) {
                     <th>Место установки</th>
                     <th>Кол-во установленных</th>
                     <th>Кол-во остатка на складе</th>
-                    <th></th>
+                    <th style="width: 30px; padding-left: 0; padding-right: 0;"></th>
+                    <th style="width: 30px; padding-left: 0; padding-right: 0;"></th>
                     <th>Дата установки</th>
                     <th>Примечание</th>
                 </tr>
@@ -377,10 +378,10 @@ if(null !== filter_input(INPUT_POST, 'stock_out_submit')) {
                     <td><?=$row['place'] ?></td>
                     <td><?=$row['number'] ?></td>
                     <td><?=$row['stock'] ?></td>
-                    <td>
-                        <button class="btn btn-dark btn-sm ui_tooltip left" data-toggle="modal" data-target="#stock_in_<?=$row['id'] ?>" title="Принять на склад"><i class="fas fa-plus"></i></button>
+                    <td style="padding-left: 0; padding-right: 2px;"><button class="btn btn-dark btn-sm d-inline ui_tooltip left" style="margin-left: 0; margin-right: 0;" data-toggle="modal" data-target="#stock_in_<?=$row['id'] ?>" title="Принять на склад"><i class="fas fa-plus"></i></button></td>
+                    <td style="padding-left: 0; padding-right: 2px;">
                         <?php if($row['stock'] > 1): ?>
-                        <button class="btn btn-outline-dark btn-sm ui_tooltip right" data-toggle="modal" data-target="#stock_out_<?=$row['id'] ?>" title="Взять со склада"><i class="fas fa-minus"></i></button>
+                        <button class="btn btn-outline-dark btn-sm d-inline ui_tooltip right" style="margin-left: 0; margin-right: 0;" data-toggle="modal" data-target="#stock_out_<?=$row['id'] ?>" title="Взять со склада"><i class="fas fa-minus"></i></button>
                         <?php endif; ?>
                     </td>
                     <td></td>
