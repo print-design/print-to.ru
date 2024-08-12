@@ -96,7 +96,7 @@ if(null !== filter_input(INPUT_POST, 'user_change_password_submit')) {
                             <button type="button" class="close user_change_password_dismiss" data-dismiss="modal"><i class="fas fa-times"></i></button>
                         </div>
                         <div class="modal-body">
-                            <div style="font-size: x-large;">Сотрудник: <span id="user_change_password_fio"><?=$user_change_password_confirm_fio ?></span></div>
+                            <div style="font-size: x-large;">Пользователь: <span id="user_change_password_fio"><?=$user_change_password_confirm_fio ?></span></div>
                             <div class="form-group">
                                 <label for="user_change_password_old">Текущий пароль</label>
                                 <input type="password" id="user_change_password_old" name="user_change_password_old" class="form-control<?=$user_change_password_old_valid ?>" required="required" />
@@ -132,11 +132,11 @@ if(null !== filter_input(INPUT_POST, 'user_change_password_submit')) {
             ?>
             <div class="d-flex justify-content-between mb-auto">
                 <div class="p-0">
-                    <h1>Сотрудники</h1>
+                    <h1>Пользователи</h1>
                 </div>
                 <div class="pt-1">
                     <a href="create.php" title="Добавить пользователя" class="btn btn-dark">
-                        <i class="fas fa-plus" style="font-size: 12px;"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Добавить сотрудника
+                        <i class="fas fa-plus" style="font-size: 12px;"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Добавить пользователя
                     </a>
                 </div>
             </div>

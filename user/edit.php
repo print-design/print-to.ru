@@ -137,7 +137,7 @@ if(empty($role_id)) {
             <div class="row">
                 <div class="col-12 col-md-6">
                     <a class="btn btn-outline-dark backlink" href="<?=APPLICATION ?>/user/">Назад</a>
-                    <h1>Редактирование сотрудника</h1>
+                    <h1>Редактирование пользователя</h1>
                     <form method="post">
                         <input type="hidden" id="id" name="id" value="<?= filter_input(INPUT_GET, 'id') ?>"/>
                         <div class="form-group">

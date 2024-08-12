@@ -109,7 +109,7 @@ if(null !== filter_input(INPUT_POST, 'user_create_submit')) {
             ?>
             <a class="btn btn-outline-dark backlink" href="<?=APPLICATION ?>/user/">Назад</a>
             <div style="width:387px;">
-                <h1 style="font-size: 24px; font-weight: 600;">Добавление сотрудника</h1>
+                <h1 style="font-size: 24px; font-weight: 600;">Добавление пользователя</h1>
                 <form method="post">
                     <div class="form-group">
                         <select id="role_id" name="role_id" class="form-control" required="required">
