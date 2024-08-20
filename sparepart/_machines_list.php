@@ -8,7 +8,7 @@
             $machine_name = $row['name'];
         }
     ?>
-    <a href="<?= BuildQuery('machine_id', $row['id']) ?>" class="mr-4<?=$machine_class ?>"><?=$row['name'] ?></a>
+    <a href="<?= BuildQueryAddRemove('machine_id', $row['id'], 'type_id') ?>" class="mr-4<?=$machine_class ?>"><?=$row['name'] ?></a>
     <?php endwhile; ?>
 </div>
 <hr />

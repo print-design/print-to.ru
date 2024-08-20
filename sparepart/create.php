@@ -6,12 +6,19 @@ if(!IsInRole(array(ROLE_NAMES[ROLE_ADMIN], ROLE_NAMES[ROLE_ENGINEER], ROLE_NAMES
     header('Location: '.APPLICATION.'/unauthorized.php');
 }
 
-$type_id = filter_input(INPUT_GET, 'type_id');
 $machine_id = filter_input(INPUT_GET, 'machine_id');
 
-// Тип и машина должны быть заданы
-if(empty($type_id) || empty($machine_id)) {
+// Машина должны быть задана
+if(empty($machine_id)) {
     header('Location: '.APPLICATION.'/sparepart/');
+}
+
+$type_id = null;
+
+$sql = "select type from machine where id = $machine_id";
+$fetcher = new Fetcher($sql);
+if($row = $fetcher->Fetch()) {
+    $type_id = $row['type'];
 }
 
 // Валидация формы
@@ -72,7 +79,7 @@ if(null !== filter_input(INPUT_POST, 'create_sparepart_submit')) {
         }
         
         if(empty($error_message)) {
-            header('Location: '.APPLICATION."/sparepart/?type_id=$type_id&machine_id=$machine_id#sparepart_$id");
+            header('Location: '.APPLICATION."/sparepart/?machine_id=$machine_id#sparepart_$id");
         }
     }
 }
@@ -97,7 +104,7 @@ if(null !== filter_input(INPUT_POST, 'create_sparepart_submit')) {
                 echo "<div class='alert alert-danger'>$error_message</div>";
             }
             ?>
-            <a class="btn btn-light backlink" href="<?=APPLICATION ?>/sparepart/?type_id=<?= $type_id ?>&machine_id=<?=$machine_id ?>">Назад</a>
+            <a class="btn btn-light backlink" href="<?=APPLICATION ?>/sparepart/?machine_id=<?=$machine_id ?>">Назад</a>
             <div class="row">
                 <div class="col-12 col-lg-6">
                     <h1>Новая запчасть <?=$machine_name ?></h1>

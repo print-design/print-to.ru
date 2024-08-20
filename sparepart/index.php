@@ -10,24 +10,34 @@ $type_id = filter_input(INPUT_GET, 'type_id');
 $machine_id = filter_input(INPUT_GET, 'machine_id');
 $find = filter_input(INPUT_GET, 'find');
 
-// Если не указаны type_id или machine_id перенаправляем на первые из них
-if(empty($type_id) || empty($machine_id)) {
-    if(empty($type_id)) {
+if(empty($type_id)) {
+    if(empty($machine_id)) {
+        // Если не указаны type_id или machine_id перенаправляем на печатные машины
         $type_id = MACHINE_TYPE_PRINTERS;
     }
-    
-    if(empty($machine_id)) {
-        $sql = "select id from machine where type = $type_id order by name limit 1";
+    else {
+        // Определяем тип работы по машине
+        $sql = "select type from machine where id = $machine_id";
         $fetcher = new Fetcher($sql);
         if($row = $fetcher->Fetch()) {
-            $machine_id = $row['id']; 
+            $type_id = $row['type'];
         }
         else {
-            $machine_id = "NULL";
+            $error_message = "Ошибка при определении типа работы по машине";
         }
     }
+}
     
-    header("Location: ?type_id=$type_id&machine_id=$machine_id");
+if(!empty($type_id) && empty($machine_id)) {
+    // Если имеется type_id, то перенаправляем на первую машину этого типа
+    $sql = "select id from machine where type = $type_id order by name limit 1";
+    $fetcher = new Fetcher($sql);
+    if($row = $fetcher->Fetch()) {
+        $machine_id = $row['id'];
+    }
+    else {
+        $machine_id = "NULL";
+    }
 }
 
 // Обработка добавления поставщика
@@ -297,7 +307,7 @@ if(null !== filter_input(INPUT_POST, 'stock_out_submit')) {
             ?>
             <div class="d-flex justify-content-between">
                 <div><h1>Запчасти <?=$machine_name ?></h1></div>
-                <div><a href="create.php?type_id=<?=$type_id ?>&machine_id=<?=$machine_id ?>" class="btn btn-dark"><i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Добавить запчасть</a></div>
+                <div><a href="create.php?machine_id=<?=$machine_id ?>" class="btn btn-dark"><i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Добавить запчасть</a></div>
             </div>
             <table class="table">
                 <tr>
@@ -312,6 +322,7 @@ if(null !== filter_input(INPUT_POST, 'stock_out_submit')) {
                     <th style="width: 30px; padding-left: 0; padding-right: 0;"></th>
                     <th>Дата установки</th>
                     <th>Примечание</th>
+                    <td></td>
                 </tr>
                 <?php
                 // Продавцы запчастей
@@ -336,7 +347,7 @@ if(null !== filter_input(INPUT_POST, 'stock_out_submit')) {
                 }
                 
                 // Запчасти
-                $sql = "select id, name, place, number, stock, comment from sparepart where machine_id = $machine_id ";
+                $sql = "select id, date, name, place, number, stock, comment from sparepart where machine_id = $machine_id ";
                 if(!empty($find)) {
                     $find = addslashes($find);
                     $sql .= "and name like '%$find%' ";
@@ -384,8 +395,9 @@ if(null !== filter_input(INPUT_POST, 'stock_out_submit')) {
                         <button class="btn btn-outline-dark btn-sm d-inline ui_tooltip right" style="margin-left: 0; margin-right: 0;" data-toggle="modal" data-target="#stock_out_<?=$row['id'] ?>" title="Взять со склада"><i class="fas fa-minus"></i></button>
                         <?php endif; ?>
                     </td>
-                    <td></td>
+                    <td><?= DateTime::createFromFormat('Y-m-d H:i:s', $row['date'])->format('d.m.Y') ?></td>
                     <td>
+                        <?php if(false): ?>
                         <div class="d-flex justify-content-start">
                             <div class="pr-2 comment_pen">
                                 <a href="javascript: void(0);" onclick="EditComment(event);">
@@ -401,6 +413,13 @@ if(null !== filter_input(INPUT_POST, 'stock_out_submit')) {
                                    onkeydown="javascript: if(event.key == 'Enter') { SaveComment(event, <?=$row['id'] ?>); }" 
                                    onfocusout="javascript: SaveComment(event, <?=$row['id'] ?>);" /> 
                         </div>
+                        <?php endif; ?>
+                        <?= htmlentities($row['comment']) ?>
+                    </td>
+                    <td class="text-right">
+                        <a href="edit.php?id=<?=$row['id'] ?>">
+                            <image src="../images/icons/edit1.svg" title="Редактировать" />
+                        </a>
                     </td>
                 </tr>
                 <?php endwhile; ?>
